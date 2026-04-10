@@ -116,12 +116,19 @@ Think of it this way:
 - **Generated cognitive bases** = kernel modules that extend it
 - **Domain skills** = applications that run on top
 
+## Deep dive
+
+📖 **[What is a Cognitive Base? (中文)](docs/article-zh.md)** — A detailed article explaining the concept, with 3 real before/after scenarios and design principles.
+
 ## File structure
 
 ```
 cognitive-base-creator/
 ├── README.md       ← You are here
-└── SKILL.md        ← The Creator skill (the only file you need)
+├── SKILL.md        ← The Creator skill (the only file you need)
+└── docs/
+    ├── article-zh.md   ← 认知基座详解文章（中文）
+    └── images/         ← Article illustrations
 ```
 
 ## License
@@ -210,6 +217,10 @@ cp SKILL.md ~/.claude/skills/cognitive-base-creator/
 ### Cursor / Cline / Continue / 其他 Agent
 
 将 `SKILL.md` 的内容粘贴到你的 Agent 启动时读取的指令文件中。
+
+## 深度阅读
+
+📖 **[所有 Agent 都缺了 Skill 无法解决的一层：认知基座](docs/article-zh.md)** — 详细解释认知基座概念，包含 3 个真实 Before/After 场景对比和设计原则。
 
 ## 与 Tacit Knowledge 的关系
 
