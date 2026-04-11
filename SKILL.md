@@ -204,12 +204,14 @@ Three before/after scenarios demonstrating the framework in action.
 
 Platform-specific installation guides. Follow the exact structure from tacit-knowledge's install files:
 
-- **claude-code.md**: mkdir + cp commands, CLAUDE.md injection, two-layer table, verify, uninstall
+- **claude-code.md**: `cat cognitive-protocol.md >> ~/.claude/CLAUDE.md` direct injection, skill file cp commands, two-layer table, verify, uninstall
 - **codex.md**: AGENTS.md method, system prompt method, custom instructions method, what to include
 - **gemini.md**: system_instruction API, AI Studio, CLI/framework, what to include
 - **generic.md**: universal principle, agent/framework table, step-by-step, file selection guide, troubleshooting
 
 Replace all references to "tacit-knowledge" with the new framework's name and directory.
+
+**CRITICAL**: Claude Code install must use direct content injection (`cat cognitive-protocol.md >> ~/.claude/CLAUDE.md`), NOT `@` file references. The `@` syntax depends on specific Claude Code versions and will silently fail on older versions, leaving the cognitive base unloaded. Direct `cat` append works on all versions.
 
 ### 6. README.md
 
@@ -310,7 +312,7 @@ After generating, offer to install for the user's platform. Installation maps:
 
 | Platform | Core rules destination | Skill files destination |
 |---|---|---|
-| Claude Code | `~/.claude/[name].md` (ref in `CLAUDE.md`) | `~/.claude/skills/[name]/` |
+| Claude Code | `~/.claude/CLAUDE.md` (appended via `cat`) | `~/.claude/skills/[name]/` |
 | Codex | Prepend to `AGENTS.md` | Project directory |
 | Gemini | `system_instruction` field | Project directory |
 | Cursor | Prepend to `.cursorrules` | Project directory |
