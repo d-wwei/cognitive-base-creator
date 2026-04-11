@@ -1,3 +1,8 @@
+---
+name: 认知底座生成器
+description: "认知底座生成器——从任何思维框架生成可安装的认知底座包。"
+---
+
 # Cognitive Base Creator
 
 Generate complete cognitive base skill packages from any thinking framework or methodology.
