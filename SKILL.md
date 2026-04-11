@@ -200,18 +200,43 @@ Three before/after scenarios demonstrating the framework in action.
 - After examples must be clearly better, not just differently formatted
 - Problem and shift annotations help the reader understand WHY it's better
 
-### 5. install/ directory (4 files)
+### 5. install.sh + install/ directory
 
-Platform-specific installation guides. Follow the exact structure from tacit-knowledge's install files:
+Generate TWO things for installation:
 
-- **claude-code.md**: `cat cognitive-protocol.md >> ~/.claude/CLAUDE.md` direct injection, skill file cp commands, two-layer table, verify, uninstall
-- **codex.md**: AGENTS.md method, system prompt method, custom instructions method, what to include
-- **gemini.md**: system_instruction API, AI Studio, CLI/framework, what to include
-- **generic.md**: universal principle, agent/framework table, step-by-step, file selection guide, troubleshooting
+**A. install.sh** (at repo root, executable)
 
-Replace all references to "tacit-knowledge" with the new framework's name and directory.
+A unified shell script that auto-detects installed AI agents and installs the cognitive base to all of them. The install.sh is IDENTICAL across all cognitive base repos — BASE_NAME is auto-derived from the directory name, SKILL_FILES are discovered dynamically.
 
-**CRITICAL**: Claude Code install must use direct content injection (`cat cognitive-protocol.md >> ~/.claude/CLAUDE.md`), NOT `@` file references. The `@` syntax depends on specific Claude Code versions and will silently fail on older versions, leaving the cognitive base unloaded. Direct `cat` append works on all versions.
+Copy the canonical install.sh from any existing cognitive base repo (e.g., https://github.com/d-wwei/first-principles/install.sh) and include it unchanged.
+
+The install.sh supports 6 agents with dual-mode injection:
+
+| Agent | Config File | Default Mode | Protocol Location |
+|---|---|---|---|
+| Claude Code | `~/.claude/CLAUDE.md` | @ ref | `~/.claude/{base}.md` |
+| Gemini CLI | `~/.gemini/GEMINI.md` | @ ref | `~/.gemini/{base}.md` |
+| Codex CLI | `~/.codex/AGENTS.md` | inline | in AGENTS.md |
+| Cursor | `.cursor/rules/*.mdc` | .mdc file | `.cursor/rules/cognitive-base-{base}.mdc` |
+| OpenCode | `~/.config/opencode/AGENTS.md` | inline | in AGENTS.md |
+| OpenClaw | `~/.openclaw/workspace/AGENTS.md` | inline | in AGENTS.md |
+
+Features: auto-detection, idempotency (marker comments), `--uninstall`, `--status`, `--inline` fallback, mode switching.
+
+**B. install/ directory** (4 markdown files, documentation/manual reference)
+
+Keep the 4 platform-specific markdown files as human-readable guides. Each should begin with:
+
+> **Recommended**: Run `./install.sh` from the repo root for automated installation.
+
+Then follow the existing format for manual steps. Update generic.md to cover all 6 agents.
+
+- **claude-code.md**: Documents both @ ref mode (default) and inline mode, skill file installation, verify, uninstall
+- **codex.md**: AGENTS.md inline injection, what to include
+- **gemini.md**: Both @ ref mode and inline mode, API and AI Studio methods
+- **generic.md**: Universal principle, 6-agent platform mapping table, step-by-step, file selection guide, troubleshooting
+
+**CRITICAL**: The install.sh defaults to `@` reference mode for Claude Code and Gemini CLI (cleaner, easier to update), and inline mode with marker comments for agents that don't support `@` references. The `--inline` flag forces inline mode for all agents. Both modes are idempotent and cleanly uninstallable.
 
 ### 6. README.md
 
@@ -299,26 +324,26 @@ When generating, create all files under a directory named after the framework (k
 ├── SKILL.md
 ├── anti-patterns.md
 ├── examples.md
+├── install.sh                 ← unified installer (executable, identical across repos)
 └── install/
-    ├── claude-code.md
-    ├── codex.md
-    ├── gemini.md
-    └── generic.md
+    ├── claude-code.md         ← manual reference
+    ├── codex.md               ← manual reference
+    ├── gemini.md              ← manual reference
+    └── generic.md             ← manual reference (covers all 6 agents)
 ```
 
 Write files to the current working directory: `./[framework-name]/`
 
-After generating, offer to install for the user's platform. Installation maps:
+After generating, offer to install for the user's platform:
 
-| Platform | Core rules destination | Skill files destination |
-|---|---|---|
-| Claude Code | `~/.claude/CLAUDE.md` (appended via `cat`) | `~/.claude/skills/[name]/` |
-| Codex | Prepend to `AGENTS.md` | Project directory |
-| Gemini | `system_instruction` field | Project directory |
-| Cursor | Prepend to `.cursorrules` | Project directory |
-| Any other | Prepend to system prompt / instructions file | Project directory |
+| Method | Command |
+|---|---|
+| Automated (recommended) | `cd [framework-name] && chmod +x install.sh && ./install.sh` |
+| Specific agent only | `./install.sh --agent=claude-code` |
+| Inline mode (no @ refs) | `./install.sh --inline` |
+| Manual | See `install/` directory guides |
 
-If the user's platform is unknown, ask before installing. If the user wants multi-platform install, run all applicable steps.
+If the user's platform is unknown, ask before installing. The install.sh auto-detects installed agents.
 
 ---
 
