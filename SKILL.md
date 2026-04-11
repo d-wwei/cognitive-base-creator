@@ -44,7 +44,7 @@ Generate all 6 files in order. Each file has specific quality criteria below.
 ### Phase 3: Self-review
 
 After generation, verify:
-- [ ] cognitive-protocol.md body is pure operational instructions — no definitions, history, or academic citations (theory names allowed in title and section labels as anchors)
+- [ ] cognitive-protocol.md contains zero theory names — only operational instructions
 - [ ] Every instruction in cognitive-protocol.md is actionable by an LLM (not "understand deeply" but "before answering, list three constraints")
 - [ ] Anti-patterns are unique to THIS framework, not duplicating Tacit Knowledge's 8 patterns
 - [ ] Before/After examples show clear, measurable quality difference
@@ -68,14 +68,13 @@ The core rules file. Injected into always-on configuration. This is the most imp
 - Total: ~30 lines of actual rules
 
 **Content requirements:**
-- Theory names allowed in title and section headings as anchors; body must be pure operational instructions
-- NO definitions, NO history, NO academic citations in the body
+- NO theory names, NO jargon, NO academic references
 - Every instruction must be directly executable: "Do X" or "Before Y, check Z"
 - Instructions change the REASONING PROCESS, not the output format
 - Banned phrases: "understand," "consider," "be aware of," "keep in mind" — these are not actions
 - Good verbs: "identify," "list," "check," "reverse," "ask," "compare," "state," "name"
 
-**Quality test:** Read only the bullet points under each heading. If they contain definitions, history, or "what X means" explanations, it's too theoretical. Every bullet should be an executable instruction.
+**Quality test:** If you remove the title, can you tell which theory it's based on? If yes, it's too theoretical. Strip further.
 
 ### 2. SKILL.md (~120 lines)
 
@@ -263,10 +262,10 @@ MIT
    - Every instruction must change HOW the agent reasons, not WHAT it outputs
    - Test: "Does this instruction apply regardless of whether the agent is writing code, designing UI, or giving career advice?" If no, it's operational — rewrite or remove.
 
-2. **Body is operational, not academic**
-   - Title and section headings may use theory names as anchors (e.g., `# First Principles — Cognitive Protocol`)
-   - The body under each heading must be pure operational instructions — no definitions, history, or academic citations
-   - Detailed theory explanations, academic context, and further reading go in SKILL.md and README.md
+2. **No theory in cognitive-protocol.md**
+   - The core rules file must read as pure operational instructions
+   - Theory names, academic jargon, and framework labels go in SKILL.md and README.md only
+   - The agent should apply the rules without knowing which theory they come from
 
 3. **Framework-specific anti-patterns**
    - Each framework has characteristic failure modes that are DIFFERENT from generic output quality issues
