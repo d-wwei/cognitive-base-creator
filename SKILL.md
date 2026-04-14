@@ -41,6 +41,87 @@ Before generating anything, deeply understand the input framework:
 
 Generate all 6 files in order. Each file has specific quality criteria below.
 
+### Phase 2.5: Manifest generation (for cognitive-kernel integration)
+
+After generating the core files, auto-extract a manifest.yml for integration with [cognitive-kernel](https://github.com/d-wwei/cognitive-kernel) (the 6-layer intervention framework).
+
+**Step 1: Auto-extract candidates from cognitive-protocol.md**
+
+Read the generated cognitive-protocol.md and extract:
+
+- **triggers**: Every "IF...THEN..." pattern or conditional instruction → candidate L3 trigger
+  - Map to `{if: <condition>, then: <action>}` format
+- **core_rules**: The most important 2-3 operational rules (highest-impact cognitive shifts) → candidate L5 rules
+  - Map to `{rule: <text>, rank: 1|2|3}` format (rank 1 = most fundamental)
+- **output_fields**: Any instruction requiring Agent to include specific content in responses → candidate L1 field
+  - Map to `{prompt: <text>, when: proposing_solution|proposing_change|claiming_done|always}` format
+- **activation**: From SKILL.md's intensity calibration and cognitive shifts → activation scenarios
+  - Map to list of scenario descriptions
+
+**Step 2: Determine tier**
+
+- If the framework is a core reasoning paradigm (e.g., first principles, systems thinking) → suggest `tier: 5`
+- If the framework is a specialized tool (e.g., specific to negotiation, creativity) → suggest `tier: 6`
+- Present suggestion to user for confirmation
+
+**Step 3: Present candidates for user confirmation**
+
+Show extracted candidates in a structured format:
+
+```
+manifest.yml 候选内容（从 cognitive-protocol.md 自动提取）：
+
+Tier: [5|6] (建议)
+
+L1 output_fields (候选):
+  1. [prompt] — when: [when] ← 来源: protocol §X
+  2. ...
+
+L3 triggers (候选):
+  1. IF [condition] → THEN [action] ← 来源: protocol §X
+  2. ...
+
+L5 core_rules (候选, 仅 tier-5):
+  1. [rule] (rank 1) ← 来源: protocol §X
+  2. ...
+
+L6 activation (候选):
+  1. [scenario]
+  2. ...
+
+请确认或修改以上候选内容。
+```
+
+User can: accept all / modify specific items / skip manifest generation entirely.
+
+**Step 4: Generate manifest.yml**
+
+Write the confirmed content to `manifest.yml`:
+
+```yaml
+schema_version: 1
+name: <framework-name>
+tier: <5|6>
+
+output_fields:
+  - prompt: "<text>"
+    when: <when>
+
+triggers:
+  - if: "<condition>"
+    then: "<action>"
+
+core_rules:    # only for tier: 5
+  - rule: "<text>"
+    rank: <1|2|3>
+
+activation:
+  - "<scenario>"
+
+recommends:    # optional, filled if user specifies
+  - "<related-base>"
+```
+
 ### Phase 3: Self-review
 
 After generation, verify:
@@ -206,9 +287,23 @@ Generate TWO things for installation:
 
 **A. install.sh** (at repo root, executable)
 
-A unified shell script that auto-detects installed AI agents and installs the cognitive base to all of them. The install.sh is IDENTICAL across all cognitive base repos — BASE_NAME is auto-derived from the directory name, SKILL_FILES are discovered dynamically.
+A unified shell script with **dual-mode** installation:
 
-Copy the canonical install.sh from any existing cognitive base repo (e.g., https://github.com/d-wwei/first-principles/install.sh) and include it unchanged.
+**Mode 1: cognitive-kernel detected** (preferred)
+If `~/.cognitive-kernel/cognitive-registry.yml` exists, the script:
+1. Detects the kernel is installed
+2. Displays: "检测到 cognitive-kernel。推荐使用内核安装以获得 L1-L4 结构性保障。"
+3. Offers options:
+   - (1) 内核安装 (recommended): prints the command `/cognitive-kernel install <path>` for user to run in their AI agent session
+   - (2) 独立安装: proceeds with traditional standalone installation (no L1-L4 integration)
+4. If user chooses kernel install, exits after printing the command (actual install happens in agent session)
+
+**Mode 2: no kernel** (backward-compatible)
+If no kernel detected, proceeds with traditional installation — auto-detects installed AI agents, injects cognitive-protocol.md into agent config files. This is the existing behavior, unchanged.
+
+The install.sh BASE_NAME is auto-derived from the directory name, SKILL_FILES are discovered dynamically.
+
+Copy the canonical install.sh from any existing cognitive base repo (e.g., https://github.com/d-wwei/first-principles/install.sh) and add the kernel detection at the top (before the agent detection loop).
 
 The install.sh supports 6 agents with dual-mode injection:
 
@@ -324,7 +419,8 @@ When generating, create all files under a directory named after the framework (k
 ├── SKILL.md
 ├── anti-patterns.md
 ├── examples.md
-├── install.sh                 ← unified installer (executable, identical across repos)
+├── manifest.yml               ← cognitive-kernel integration (Phase 2.5)
+├── install.sh                 ← unified installer (executable, dual-mode)
 └── install/
     ├── claude-code.md         ← manual reference
     ├── codex.md               ← manual reference
